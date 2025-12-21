@@ -12,44 +12,44 @@ for i in range(m):
 
 values = list(map(int,input().split()))
 euler = []
-in_time = [0 for i in range(n+1)]
-out_time = [0 for i in range(n+1)]
+start = [0 for i in range(n+1)]
+finish = [0 for i in range(n+1)]
 
 def dfs(node,parent):
-    in_time[node] = len(euler)
+    start[node] = len(euler)
     euler.append(node)
     for child in adj[node]:
         if(child != parent):
             dfs(child,node)
-    out_time[node] = len(euler) - 1
+    finish[node] = len(euler) - 1
 
 dfs(1,-1)
 
 arr = [values[node] for node in euler]
 
-block_size = int(math.sqrt(len(arr)))
-num_blocks = (len(arr)+block_size-1) // block_size
-block_sum = [0] * num_blocks
+bz = int(math.sqrt(len(arr)))
+num = (len(arr)+bz-1) // bz
+bs = [0] * num
 
 for i,val in enumerate(arr):
-    block_sum[i // block_size] += val
+    bs[i // bz] += val
 
 def query_subtree_sum(node):
-    l = in_time[node]
-    r = out_time[node]
+    l = start[node]
+    r = finish[node]
     total = 0
     while(l <= r):
-        if(l%block_size==0 and l+block_size-1<=r):
-            total += block_sum[l // block_size]
-            l += block_size
+        if(l%bz==0 and l+bz-1<=r):
+            total += bs[l // bz]
+            l += bz
         else:
             total += arr[l]
             l += 1
     return total
 
 def update_node(node, new_value):
-    idx = in_time[node]
-    block_idx = idx // block_size
+    idx = start[node]
+    bnum = idx // bz
     diff = new_value - arr[idx]
     arr[idx] = new_value
-    block_sum[block_idx] += diff
+    bs[bnum] += diff
