@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define int long long
 
 struct mergesorttree{
     int n;
@@ -11,32 +10,6 @@ struct mergesorttree{
         st.resize(4*n);
     }
 
-    vector<int> comb(vector<int> &a, vector<int> &b){
-        int i = 0;
-        int j = 0;
-        int k = 0;
-        vector<int> ret(a.size()+b.size());
-        while(i < a.size() && j < b.size()){
-            if(a[i] <= b[j]){
-                ret[k] = a[i];
-                k++; i++;
-            }
-            else{
-                ret[k] = b[j];
-                j++; k++;
-            }
-        }
-        while(i < a.size()){
-            ret[k] = a[i];
-            i++ ; k++;
-        }
-        while(j < b.size()){
-            ret[k] = b[j];
-            j++ ; k++;
-        }
-        return ret;
-    }
-
     void build(vector<int> &v){build(0,n-1,0,v);}
     void build(int start, int ending, int node, vector<int> &v){
         if(start==ending){
@@ -45,8 +18,8 @@ struct mergesorttree{
         int mid = start + (ending - start)/2;
         build(start, mid, 2*node + 1, v);
         build(mid + 1, ending, 2*node +2, v);
-
-        st[node] = comb(st[2*node +1],st[2*node +2]);
+        st[node].reserve(st[2*node + 1].size()+st[2*node + 2].size());
+        merge(st[2*node + 1].begin(), st[2*node + 1].end(), st[2*node + 2].begin(), st[2*node + 2].end(),back_inserter(st[node]));
     }
 
     int query(int l, int r, int a, int b){return query(0,n-1,l,r,0,a,b);}
@@ -80,6 +53,6 @@ int32_t main(){
     while(q--){
         int a,b,c,d; cin >> a >> b >> c >> d;
         a--; b--;
-        cout << tree.query(a,b,c,d) << endl;
+        cout << tree.query(a,b,c,d) << "\n";
     }
 }
